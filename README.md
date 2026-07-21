@@ -8,43 +8,33 @@ Proyecto desarrollado como parte del Challenge de Alura: Agente de IA que lee y 
 
 El agente sigue un flujo clásico de RAG (Retrieval-Augmented Generation):
 
-documento_luminastore.pdf
-        │
-        ▼
-  [PyPDFLoader]  →  carga el PDF y extrae su texto
-        │
-        ▼
-  [RecursiveCharacterTextSplitter]  →  divide el texto en fragmentos de 1000
-        │                                caracteres (200 de solapamiento)
-        ▼
-  [CohereEmbeddings]  →  convierte cada fragmento en un vector numérico
-        │
-        ▼
-  [FAISS Vectorstore]  →  índice vectorial en memoria para búsqueda semántica
-        │
-        ▼
-  [Retriever]  →  dada una pregunta, busca los fragmentos más relevantes
-        │
-        ▼
-  [ChatCohere + Prompt]  →  el LLM redacta la respuesta usando SOLO esos
-        │                     fragmentos como contexto
-        ▼
-  [Gradio ChatInterface]  →  interfaz de chat donde el usuario pregunta
-                              y recibe la respuesta
+## Arquitectura de la solución
+
+El agente sigue un flujo clásico de RAG (Retrieval-Augmented Generation):
+
+1. **`documento_luminastore.pdf`** — documento fuente con las políticas de la tienda.
+2. **PyPDFLoader** → carga el PDF y extrae su texto.
+3. **RecursiveCharacterTextSplitter** → divide el texto en fragmentos de 1000 caracteres (200 de solapamiento).
+4. **CohereEmbeddings** → convierte cada fragmento en un vector numérico.
+5. **FAISS Vectorstore** → índice vectorial en memoria para búsqueda semántica.
+6. **Retriever** → dada una pregunta, busca los fragmentos más relevantes.
+7. **ChatCohere + Prompt** → el LLM redacta la respuesta usando SOLO esos fragmentos como contexto.
+8. **Gradio ChatInterface** → interfaz de chat donde el usuario pregunta y recibe la respuesta.
+
+En resumen: cuando alguien hace una pregunta, el sistema busca los fragmentos del PDF más relacionados semánticamente con esa pregunta, y se los pasa al modelo de lenguaje para que redacte una respuesta basada únicamente en esa información — evitando que el modelo invente datos que no están en el documento.
 
 En resumen: cuando alguien hace una pregunta, el sistema busca los fragmentos del PDF más relacionados semánticamente con esa pregunta (no es una búsqueda de palabras exactas, sino de significado), y se los pasa al modelo de lenguaje para que redacte una respuesta basada únicamente en esa información — evitando que el modelo invente datos que no están en el documento.
 
 ## Tecnologías utilizadas
 
-| Tecnología | Uso |
-| Python | Lenguaje principal |
-| LangChain / LangChain Classic | Orquestación del pipeline RAG |
-| PyPDF | Lectura del documento PDF |
-| Cohere (`embed-multilingual-v3.0`) | Generación de embeddings |
-| Cohere (`command-a-03-2025`) | Modelo de lenguaje (LLM) |
-| FAISS | Base de datos vectorial (búsqueda semántica) |
-| Gradio | Interfaz de chat |
-| Oracle Cloud Infrastructure (OCI) | Despliegue en la nube |
+- **Python** — lenguaje principal del proyecto
+- **LangChain / LangChain Classic** — orquestación del pipeline RAG
+- **PyPDF** — lectura del documento PDF
+- **Cohere (`embed-multilingual-v3.0`)** — generación de embeddings
+- **Cohere (`command-a-03-2025`)** — modelo de lenguaje (LLM)
+- **FAISS** — base de datos vectorial (búsqueda semántica)
+- **Gradio** — interfaz de chat
+- **Oracle Cloud Infrastructure (OCI)** — despliegue en la nube
 
 
 ## Cómo ejecutar el proyecto
@@ -108,10 +98,9 @@ Tenga en cuenta que existen excepciones para artículos no retornables, como tar
 
 ## Estructura del repositorio
 
-luminastore-agente-ia/
-├── app.py                     # Script principal (agente + interfaz Gradio)
-├── requirements.txt           # Dependencias del proyecto
-├── .env.example                # Plantilla de variables de entorno
-├── .gitignore                  # Archivos excluidos de Git (incluye .env)
-├── documento_luminastore.pdf  # Documento fuente del agente
-└── README.md                   # Este archivo
+- `app.py` — script principal (agente + interfaz Gradio)
+- `requirements.txt` — dependencias del proyecto
+- `.env.example` — plantilla de variables de entorno
+- `.gitignore` — archivos excluidos de Git (incluye `.env`)
+- `documento_luminastore.pdf` — documento fuente del agente
+- `README.md` — este archivo
