@@ -1,0 +1,10 @@
+langchain
+langchain-classic
+langchain-community
+langchain-core
+langchain-cohere
+langchain-text-splitters
+faiss-cpu
+pypdf
+python-dotenv
+gradio
