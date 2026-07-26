@@ -92,9 +92,9 @@ Producto incorrecto: 5 días hábiles desde la recepción.
 Defectos de fábrica: Cubierto por la garantía (12 meses para electrónicos y 3 meses para accesorios).
 Tenga en cuenta que existen excepciones para artículos no retornables, como tarjetas de regalo, software, productos de cuidado personal abiertos, artículos personalizados y productos en liquidación final.
 
-## ☁️ Evidencia del despliegue en OCI
+## ☁️ Evidencia del despliegue "me toco usar streamlit ya que con oci no se podia en la region de colombia decia que no habia espacio"
 
-
+https://luminastore-agente-ia-challenge-alura.streamlit.app/
 
 ## Estructura del repositorio
 
