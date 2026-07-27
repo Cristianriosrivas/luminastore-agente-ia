@@ -61,22 +61,37 @@ Respuesta del agente: El costo del envío estándar es de $6.50 USD y tiene un t
 
 Pregunta: ¿Cuál es la política de reembolsos?
 
-Respuesta del agente: (pegar aquí la respuesta que dio el agente)
+Respuesta del agente: (La política de reembolsos de LuminaStore tiene como objetivo garantizar la satisfacción total de los clientes. Los reembolsos se realizan al mismo método de pago utilizado en la transacción original, y no se hacen en efectivo ni transferencias a terceros. Los tiempos de acreditación varían según el método de pago: de 5 a 10 días hábiles para tarjetas de crédito/débito.
+
+Los plazos para solicitar una devolución dependen del motivo, y hay artículos no retornables por razones de higiene, seguridad o derechos de autor, salvo defecto comprobado de fábrica. Si la devolución es a cargo del cliente (por retracto, error de compra, etc.), se descuenta una tarifa fija de $8.50 USD por logística inversa.
 
 Pregunta: ¿Cómo protegen mis datos personales?
 
-Respuesta del agente: (pegar aquí la respuesta que dio el agente)
+Respuesta del agente: En LuminaStore, protegemos sus datos personales implementando medidas de seguridad técnicas, administrativas y físicas de vanguardia. Utilizamos tecnología de encriptación SSL (Secure Socket Layer) de 256 bits para proteger los datos durante su transmisión en internet. Además, contamos con firewalls avanzados y controles de acceso restringido en nuestras bases de datos. Estas medidas están diseñadas para garantizar la confidencialidad, integridad y disponibilidad de su información personal.
 
 Pregunta: ¿Cuáles son los términos y condiciones para devolver un producto?
 
-Respuesta del agente: (pegar aquí la respuesta que dio el agente)
+Respuesta del agente: Para que una solicitud de devolución sea aprobada en LuminaStore, el producto debe cumplir con los siguientes requisitos:
+
+Estado Físico: El artículo debe estar sin uso, en perfectas condiciones estéticas y operativas.
+Embalaje: Debe devolverse en su caja o empaque original, sin alteraciones, rayones o roturas significativas.
+Accesorios Completos: Debe incluir todos los manuales, cables, piezas adicionales y obsequios promocionales que hayan venido en la caja original.
+Comprobante: Es indispensable adjuntar la factura de compra, recibo electrónico o el número de orden oficial (Order ID).
+Además, es importante considerar los plazos para solicitudes de devolución:
+
+Derecho de retracto (arrepentimiento): 30 días naturales desde la fecha de entrega.
+Producto dañado en tránsito: 48 horas posteriores a la entrega.
+Producto incorrecto: 5 días hábiles desde la recepción.
+Defectos de fábrica (garantía): 12 meses para electrónicos y 3 meses para accesorios.
+Recuerda que hay artículos no retornables, como tarjetas de regalo, software, productos de cuidado personal abiertos, productos personalizados y artículos en liquidación final.
 
 ## Sobre el despliegue
 
 El agente está desplegado en Streamlit Community Cloud:
 https://luminastore-agente-ia-challenge-alura.streamlit.app/
 
-(agregar aquí una captura de pantalla de la app funcionando)
+<img width="1366" height="691" alt="image" src="https://github.com/user-attachments/assets/be70c7af-9284-45b3-9bed-8b6a9a035884" />
+
 
 El plan original era desplegar en Oracle Cloud Infrastructure (OCI), pero durante el desarrollo la región de Bogotá tuvo una indisponibilidad prolongada de capacidad para instancias gratuitas (error "Out of host capacity", un problema reconocido por la propia Oracle). Por eso terminé usando Streamlit Community Cloud, que es igual de gratuito y se ajustaba mejor al tiempo que tenía disponible.
 
