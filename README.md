@@ -1,62 +1,57 @@
-# luminastore-agente-ia
-Agente de inteligencia artificial basado en RAG (Retrieval-Augmented Generation) que responde preguntas de soporte al cliente sobre las políticas de LuminaStore (un ecommerce), a partir de un documento PDF con política de privacidad, política de reembolsos y devoluciones, preguntas frecuentes, guía de envíos y entregas, y términos y condiciones.
+# Agente LuminaStore
 
-Proyecto desarrollado como parte del Challenge de Alura: Agente de IA que lee y responde preguntas sobre un documento.
+Agente de inteligencia artificial basado en RAG (Retrieval-Augmented Generation) que responde preguntas de soporte al cliente sobre las políticas de LuminaStore, un ecommerce ficticio. El agente lee un documento PDF con política de privacidad, política de reembolsos y devoluciones, preguntas frecuentes, guía de envíos y entregas, y términos y condiciones, y responde preguntas basándose solo en ese contenido.
 
+Proyecto desarrollado para el Challenge de Alura "Agente de IA que lee y responde preguntas sobre un documento".
 
-## Arquitectura de la solución
-
-El agente sigue un flujo clásico de RAG (Retrieval-Augmented Generation):
+App en vivo: https://luminastore-agente-ia-challenge-alura.streamlit.app/
 
 ## Arquitectura de la solución
 
-El agente sigue un flujo clásico de RAG (Retrieval-Augmented Generation):
+El flujo que sigue el agente es el siguiente:
 
-1. **`documento_luminastore.pdf`** — documento fuente con las políticas de la tienda.
-2. **PyPDFLoader** → carga el PDF y extrae su texto.
-3. **RecursiveCharacterTextSplitter** → divide el texto en fragmentos de 1000 caracteres (200 de solapamiento).
-4. **CohereEmbeddings** → convierte cada fragmento en un vector numérico.
-5. **FAISS Vectorstore** → índice vectorial en memoria para búsqueda semántica.
-6. **Retriever** → dada una pregunta, busca los fragmentos más relevantes.
-7. **ChatCohere + Prompt** → el LLM redacta la respuesta usando SOLO esos fragmentos como contexto.
-8. **Gradio ChatInterface** → interfaz de chat donde el usuario pregunta y recibe la respuesta.
+1. Se carga el documento `documento_luminastore.pdf` con PyPDFLoader.
+2. El texto se divide en fragmentos de 1000 caracteres con 200 de solapamiento, usando RecursiveCharacterTextSplitter.
+3. Cada fragmento se convierte en un vector con CohereEmbeddings (modelo embed-multilingual-v3.0).
+4. Los vectores se guardan en un índice FAISS para poder buscar por significado, no solo por palabras exactas.
+5. Cuando el usuario hace una pregunta, el retriever busca los fragmentos más relacionados con esa pregunta.
+6. Esos fragmentos se le pasan como contexto al modelo de lenguaje (ChatCohere, modelo command-a-03-2025), junto con un prompt que le indica responder solo con base en esa información.
+7. La respuesta se muestra en una interfaz de chat (Streamlit en producción, Gradio para pruebas locales).
 
-En resumen: cuando alguien hace una pregunta, el sistema busca los fragmentos del PDF más relacionados semánticamente con esa pregunta, y se los pasa al modelo de lenguaje para que redacte una respuesta basada únicamente en esa información — evitando que el modelo invente datos que no están en el documento.
+La idea principal detrás de este enfoque (RAG) es que el modelo no responde de memoria ni inventa información: solo usa lo que realmente está en el PDF.
 
-En resumen: cuando alguien hace una pregunta, el sistema busca los fragmentos del PDF más relacionados semánticamente con esa pregunta (no es una búsqueda de palabras exactas, sino de significado), y se los pasa al modelo de lenguaje para que redacte una respuesta basada únicamente en esa información — evitando que el modelo invente datos que no están en el documento.
+## Tecnologías usadas
 
-## Tecnologías utilizadas
-
-- **Python** — lenguaje principal del proyecto
-- **LangChain / LangChain Classic** — orquestación del pipeline RAG
-- **PyPDF** — lectura del documento PDF
-- **Cohere (`embed-multilingual-v3.0`)** — generación de embeddings
-- **Cohere (`command-a-03-2025`)** — modelo de lenguaje (LLM)
-- **FAISS** — base de datos vectorial (búsqueda semántica)
-- **Gradio** — interfaz de chat
-- **Oracle Cloud Infrastructure (OCI)** — despliegue en la nube
-
+- Python
+- LangChain / LangChain Classic
+- PyPDF
+- Cohere (embeddings y modelo de lenguaje)
+- FAISS
+- Streamlit (interfaz principal, desplegada en producción)
+- Gradio (interfaz alternativa para pruebas en Colab)
+- Streamlit Community Cloud (hosting)
 
 ## Cómo ejecutar el proyecto
 
-### Opción A: Google Colab (recomendado para probar rápido)
+Lo más rápido es entrar directo a la app ya desplegada:
+https://luminastore-agente-ia-challenge-alura.streamlit.app/
 
-1. Sube `documento_luminastore` a la sesión de Colab.
-2. Ejecuta las celdas del notebook en orden.
-3. Cuando te pida la API Key de Cohere, pégala (puedes conseguir una gratis en [dashboard.cohere.com](https://dashboard.cohere.com)).
-4. Al final aparecerá una interfaz de chat embebida en el notebook.
+Si quieres correrlo en tu máquina:
 
-### Opción B: localmente con `app.py`
-
-bash
-[git clone https://github.com/TU_USUARIO/luminastore-agente-ia.git
-cd luminastore-agente-ia](https://github.com/Cristianriosrivas/luminastore-agente-ia.git)](https://github.com/Cristianriosrivas/luminastore-agente-ia.git)
+```
+git clone https://github.com/Cristianriosrivas/luminastore-agente-ia.git
+cd luminastore-agente-ia
 pip install -r requirements.txt
 cp .env.example .env
-# Edita .env y pega tu COHERE_API_KEY
-python app.py
+```
 
-Luego abre en tu navegador la URL que aparece en la terminal (por defecto `http://localhost:7860`).
+Edita el archivo `.env` y pega ahí tu propia API key de Cohere. Luego corre:
+
+```
+streamlit run streamlit_app.py
+```
+
+También existe `app.py`, una versión con Gradio pensada para correr y probar dentro de Google Colab.
 
 ## Ejemplos de preguntas y respuestas
 
@@ -66,41 +61,31 @@ Respuesta del agente: El costo del envío estándar es de $6.50 USD y tiene un t
 
 Pregunta: ¿Cuál es la política de reembolsos?
 
-Respuesta del agente: La política de reembolsos de LuminaStore tiene como objetivo garantizar la satisfacción total de los clientes. Los reembolsos se realizan al mismo método de pago original y no se hacen en efectivo ni a cuentas de terceros. Los tiempos de acreditación varían según el método de pago: de 5 a 10 días hábiles para tarjetas de crédito/débito.
-
-Los plazos para solicitar una devolución dependen del motivo, y hay excepciones para artículos no retornables, como tarjetas de regalo, software, productos de higiene abiertos, artículos personalizados y productos en liquidación final, salvo por defectos comprobados.
-
-Si la devolución es a cargo del cliente (por retracto, error de compra o incompatibilidad), se descuenta una tarifa fija de $8.50 USD por logística inversa.
+Respuesta del agente: (pegar aquí la respuesta que dio el agente)
 
 Pregunta: ¿Cómo protegen mis datos personales?
 
-Respuesta del agente: En LuminaStore, protegemos sus datos personales implementando medidas de seguridad técnicas, administrativas y físicas de vanguardia. Utilizamos tecnología de encriptación SSL (Secure Socket Layer) de 256 bits para proteger los datos durante su transmisión en internet. Además, contamos con firewalls avanzados y controles de acceso restringido en nuestras bases de datos. Estas medidas están diseñadas para garantizar la confidencialidad, integridad y disponibilidad de su información personal.
+Respuesta del agente: (pegar aquí la respuesta que dio el agente)
 
-Pregunta:¿Cuáles son los términos y condiciones para devolver un producto?
+Pregunta: ¿Cuáles son los términos y condiciones para devolver un producto?
 
-Respuesta del agente: Para que una solicitud de devolución sea aprobada en LuminaStore, el producto debe cumplir con los siguientes requisitos:
+Respuesta del agente: (pegar aquí la respuesta que dio el agente)
 
-Estado Físico: El artículo debe estar sin uso, en perfectas condiciones estéticas y operativas.
-Embalaje: Debe devolverse en su caja o empaque original, sin alteraciones, rayones o roturas significativas.
-Accesorios Completos: Debe incluir todos los manuales, cables, piezas adicionales y obsequios promocionales que hayan venido en la caja original.
-Comprobante: Es indispensable adjuntar la factura de compra, recibo electrónico o el número de orden oficial (Order ID).
-Además, es importante considerar los plazos para solicitar una devolución:
+## Sobre el despliegue
 
-Derecho de retracto (arrepentimiento): 30 días naturales desde la fecha de entrega.
-Producto dañado en tránsito: 48 horas posteriores a la entrega.
-Producto incorrecto: 5 días hábiles desde la recepción.
-Defectos de fábrica: Cubierto por la garantía (12 meses para electrónicos y 3 meses para accesorios).
-Tenga en cuenta que existen excepciones para artículos no retornables, como tarjetas de regalo, software, productos de cuidado personal abiertos, artículos personalizados y productos en liquidación final.
-
-## ☁️ Evidencia del despliegue "me toco usar streamlit ya que con oci no se podia en la region de colombia decia que no habia espacio"
-
+El agente está desplegado en Streamlit Community Cloud:
 https://luminastore-agente-ia-challenge-alura.streamlit.app/
+
+(agregar aquí una captura de pantalla de la app funcionando)
+
+El plan original era desplegar en Oracle Cloud Infrastructure (OCI), pero durante el desarrollo la región de Bogotá tuvo una indisponibilidad prolongada de capacidad para instancias gratuitas (error "Out of host capacity", un problema reconocido por la propia Oracle). Por eso terminé usando Streamlit Community Cloud, que es igual de gratuito y se ajustaba mejor al tiempo que tenía disponible.
 
 ## Estructura del repositorio
 
-- `app.py` — script principal (agente + interfaz Gradio)
-- `requirements.txt` — dependencias del proyecto
-- `.env.example` — plantilla de variables de entorno
-- `.gitignore` — archivos excluidos de Git (incluye `.env`)
-- `documento_luminastore.pdf` — documento fuente del agente
-- `README.md` — este archivo
+- `streamlit_app.py`: script principal, agente con interfaz Streamlit, es lo que corre en el deploy.
+- `app.py`: versión con interfaz Gradio, para pruebas en Google Colab.
+- `requirements.txt`: dependencias del proyecto.
+- `.env.example`: plantilla de variables de entorno.
+- `.gitignore`: archivos que Git no debe subir (incluye `.env`).
+- `documento_luminastore.pdf`: documento fuente que usa el agente.
+- `README.md`: este archivo.
